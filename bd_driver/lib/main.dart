@@ -1,0 +1,31 @@
+import 'package:bd_driver/services/authenticator_services.dart';
+import 'package:bd_driver/utils/pusher_util.dart';
+import 'package:bd_driver/view/home_page.dart';
+import 'package:bd_driver/view/loading_dialog.dart';
+import 'package:bd_driver/view/loading_screen.dart';
+import 'package:bd_driver/view/login_page.dart';
+import 'package:bd_driver/view/register_page.dart';
+import 'package:bd_driver/view/user_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pusher_client/pusher_client.dart';
+import 'package:wakelock/wakelock.dart';
+
+import 'model/user.dart';
+
+Future<void> main() async {
+
+  runApp(const LoadingScreenWidget());
+  final FlutterSecureStorage storage = new FlutterSecureStorage();
+  String? value = await storage.read(key: 'Token');
+  // PusherUtil.connect(value);
+  if(value != null){
+    User u = await AuthenticatorServices.getInfomation(value);
+    runApp(HomePageWidget(user: u));
+    // runApp(UserPageWidget(user: u));
+
+  }
+  else{
+    runApp(const LoginPageWidget());
+  }
+}
